@@ -56,7 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern CAN_HandleTypeDef hcan1;
 /* USER CODE BEGIN EV */
 extern CAN_HandleTypeDef hcan1;
 extern CAN_RxHeaderTypeDef CAN1RxHeader;

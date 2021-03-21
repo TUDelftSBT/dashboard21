@@ -91,5 +91,30 @@ uint8_t ButtonOFF(void) // 1 if Bilge ON button selected 0 else
 	}
 }
 
+uint8_t read_buttons(void){
+	uint8_t button_status = 0;
 
+	button_status += ButtonHarbor();
+	button_status = button_status <<1;
+
+	button_status += ButtonHydrogen();
+	button_status = button_status <<1;
+
+	button_status += ButtonBatteryRESET();
+	button_status = button_status <<1;
+
+	button_status += ButtonCB_TRIP();
+	button_status = button_status <<1;
+
+	button_status += ButtonBilge_ON();
+	button_status = button_status <<1;
+
+	button_status += ButtonAuto();
+	button_status = button_status <<1;
+
+	button_status += ButtonOFF();
+	button_status = button_status <<1;
+
+	return button_status;
+}
 

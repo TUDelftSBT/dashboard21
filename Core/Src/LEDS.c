@@ -25,8 +25,8 @@ void Toggle_Red_LED(uint8_t ToggleNum){  // Turn on red led if 1 is given or off
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2, ToggleNum);
 }
 
-void Blink_Green_LED(uint8_t delay){
-	Toggle_Green_LED(1);
+void Blink_Yellow_LED(uint8_t delay){
+	Toggle_Yellow_LED(1);
 	HAL_Delay(delay);
-	Toggle_Green_LED(0);
+	Toggle_Yellow_LED(0);
 }

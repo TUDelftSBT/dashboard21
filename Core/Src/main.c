@@ -25,7 +25,6 @@
 #include "button_input.h"
 #include "can.h"
 #include "LEDS.h"
-#include "read_buttons.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,7 +78,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -99,6 +98,8 @@ int main(void)
   MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
 
+  Toggle_Green_LED(1); //turn on green led
+
   CAN_TxHeaderTypeDef CAN1TxHeader;    // set up the transmission can message for the buttons
   CAN1TxHeader.ExtId = 0x01;
   CAN1TxHeader.IDE = CAN_ID_STD;
@@ -107,7 +108,7 @@ int main(void)
   CAN1TxHeader.StdId = 100;
   CAN1TxHeader.DLC = 1;
 
-  uint8_t data[0];
+  uint8_t data[1];
   uint8_t button_status = read_buttons();
   /* USER CODE END 2 */
 
@@ -117,14 +118,14 @@ int main(void)
 	  button_status = read_buttons(); 			// read the buttons
 	  if(button_status != data[0])				// check if the button status has changed
 	  {
-		  data[0] = button_status;				// load the new settings
-		  if(HAL_CAN_AddTxMessage(&hcan1, &CAN1TxHeader, data, CAN_TX_MAILBOX0) != HAL_OK) //transmit signal
+		  data[0] = button_status;				// load the new setting
+		  if(HAL_CAN_AddTxMessage(&hcan1, &CAN1TxHeader, data, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //transmit signal
 		  {
 			  Error_Handler();
 		  }
 		  else
 		  {
-			  Blink_Green_LED(100); //blink if succes
+			  Blink_Yellow_LED(100); //blink if succes
 		  }
 	  }
 
@@ -175,12 +176,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 4;
   RCC_OscInitStruct.PLL.PLLN = 160;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
