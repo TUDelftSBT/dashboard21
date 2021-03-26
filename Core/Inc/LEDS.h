@@ -18,4 +18,4 @@ void Toggle_Green_LED(uint8_t);
 void Toggle_CB_TRIP_LED(uint8_t);
 void Toggle_Yellow_LED(uint8_t);
 void Toggle_Red_LED(uint8_t);
-void Blink_Green_LED(uint8_t);
+void Blink_Yellow_LED(uint8_t delay);

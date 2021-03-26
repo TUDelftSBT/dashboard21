@@ -23,6 +23,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "can.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -188,6 +189,18 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
+	static int count;
+
+	if(count % 1000 == 0){ // every 100 milliseconds
+		rr_can_send = 1; 	//read the flow sensor
+	}
+
+	if(count<20000){
+		count++;
+	}
+	else{
+		count = 0;
+	}
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
@@ -227,7 +240,7 @@ void CAN1_RX0_IRQHandler(void)
   /* USER CODE END CAN1_RX0_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
-
+  CAN1ReceiveMsg();
   /* USER CODE END CAN1_RX0_IRQn 1 */
 }
 

@@ -78,7 +78,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -105,31 +105,33 @@ int main(void)
   CAN1TxHeader.IDE = CAN_ID_STD;
   CAN1TxHeader.RTR = CAN_RTR_DATA;
   CAN1TxHeader.TransmitGlobalTime = DISABLE;
-  CAN1TxHeader.StdId = 100;
-  CAN1TxHeader.DLC = 1;
+  CAN1TxHeader.StdId = can_msg_tx_dashboard_Buttons_id;
+  CAN1TxHeader.DLC = 2;
 
-  uint8_t data[1];
-  uint8_t button_status = read_buttons();
+  uint8_t data[2];
+  uint8_t button_status[2] = {read_buttons(), read_bulgepump_buttons()}; // TODO implement a function to read the bulgepump
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1){
-	  button_status = read_buttons(); 			// read the buttons
-	  if(button_status != data[0])				// check if the button status has changed
+	  button_status[0] = read_buttons();
+	  button_status[1] = read_bulgepump_buttons(); 			// read the buttons
+	  if(CheckSendMessage(button_status[0] != data[0] || button_status[1] != data[1]))				// check if the button status has changed OR 200 milliseconds have passed
 	  {
-		  data[0] = button_status;				// load the new setting
+		  data[0] = button_status[0];			// load the new setting
+		  data[1] =  button_status[1];
 		  if(HAL_CAN_AddTxMessage(&hcan1, &CAN1TxHeader, data, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK) //transmit signal
 		  {
 			  Error_Handler();
 		  }
 		  else
 		  {
-			  Blink_Yellow_LED(100); //blink if succes
+			  Blink_Yellow_LED(50); //blink if succes
 		  }
 	  }
 
-	  CAN1ReceiveMsg(); //read can messages these are generated in the HAL interrupt .c file
+	   //read can messages these are generated in the HAL interrupt .c file
 	  if(rr_hydrogenAlarm_handle == 1)	// if the hydrogen alarm status has changed
 	  {
 		  rr_hydrogenAlarm_handle = 0; // set to default
@@ -142,10 +144,10 @@ int main(void)
 		  }
 	  }
 
-	  if(rr_EMS_handle == 1)
+	  if(rr_WC_handle == 1)
 	  {
-		  rr_hydrogenAlarm_handle = 0;
-		  if(can_msg_rx_EMS_data[0] % 2 == 1) // if the last bit of the can message is 1
+		  rr_WC_handle = 0;
+		  if((can_msg_rx_WC_data[1] & 0b00000001) == 0b00000001) // if the last bit of the can message is 1
 		  {
 			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, 1); //turn the CB led on
 		  }
@@ -369,8 +371,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14|GPIO_PIN_15|led_system_Pin|led_error_Pin
                           |led_emerg_Pin|led_cb_trip_Pin|GPIO_PIN_4|GPIO_PIN_5
-                          |GPIO_PIN_6|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10
-                          |GPIO_PIN_11|GPIO_PIN_12, GPIO_PIN_RESET);
+                          |GPIO_PIN_6|GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
@@ -381,23 +382,20 @@ static void MX_GPIO_Init(void)
                           |GPIO_PIN_13|GPIO_PIN_15|GPIO_PIN_6|GPIO_PIN_7
                           |GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : temp_Pin cb_reset_Pin */
-  GPIO_InitStruct.Pin = temp_Pin|cb_reset_Pin;
+  /*Configure GPIO pins : temp_Pin cb_reset_Pin PC10 PC11
+                           PC12 */
+  GPIO_InitStruct.Pin = temp_Pin|cb_reset_Pin|GPIO_PIN_10|GPIO_PIN_11
+                          |GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PC14 PC15 led_system_Pin led_error_Pin
                            led_emerg_Pin led_cb_trip_Pin PC4 PC5
-                           PC6 PC8 PC9 PC10
-                           PC11 PC12 */
+                           PC6 PC8 PC9 */
   GPIO_InitStruct.Pin = GPIO_PIN_14|GPIO_PIN_15|led_system_Pin|led_error_Pin
                           |led_emerg_Pin|led_cb_trip_Pin|GPIO_PIN_4|GPIO_PIN_5
-                          |GPIO_PIN_6|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10
-                          |GPIO_PIN_11|GPIO_PIN_12;
+                          |GPIO_PIN_6|GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -429,17 +427,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : harbor_mode_Pin */
-  GPIO_InitStruct.Pin = harbor_mode_Pin;
+  /*Configure GPIO pins : harbor_mode_Pin PB3 */
+  GPIO_InitStruct.Pin = harbor_mode_Pin|GPIO_PIN_3;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(harbor_mode_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PD2 */
   GPIO_InitStruct.Pin = GPIO_PIN_2;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 }
