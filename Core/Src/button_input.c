@@ -91,6 +91,10 @@ uint8_t ButtonOFF(void) // 1 if Bilge ON button selected 0 else
 	}
 }
 
+//uint8_t Button24V(void){
+//	return HAL_GPIO_ReadPin(GPIO)
+//}
+
 uint8_t read_buttons(void){
 	uint8_t button_status = 0;
 

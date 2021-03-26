@@ -452,14 +452,14 @@ static void MX_GPIO_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-	Toggle_Red_LED(1);
-	HAL_Delay(100);
-	Toggle_Red_LED(0);
+
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)
   {
-
+	  Toggle_Red_LED(1);
+	  HAL_Delay(100);
+	  Toggle_Red_LED(0);
   }
   /* USER CODE END Error_Handler_Debug */
 }
