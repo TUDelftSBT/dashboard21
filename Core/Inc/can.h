@@ -21,7 +21,9 @@ static const uint32_t can_msg_rx_WC_id = 704;	// EMS id dataframe and handle
 extern uint8_t rr_can_send;
 
 extern uint8_t rr_hydrogenAlarm_handle;
-extern uint8_t can_msg_rx_hydrogenAlarm_data[1];
+extern uint8_t can_msg_rx_hydrogenAlarm_data[8];
+extern uint8_t rr_hydrogenAlarm_timeout;
+extern uint32_t HydrogenTimeLastMessage;
 
 extern uint8_t rr_WC_handle;
 extern uint8_t can_msg_rx_WC_data[2];
@@ -31,5 +33,5 @@ extern CAN_RxHeaderTypeDef CAN1RxHeader;
 
 extern uint8_t CAN1RxData[8];
 
-void CAN1ReceiveMsg(void);
+void CAN1ReceiveMsg(uint32_t count);
 uint8_t CheckSendMessage(uint8_t changedButtons);

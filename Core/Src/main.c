@@ -132,15 +132,17 @@ int main(void)
 	  }
 
 	   //read can messages these are generated in the HAL interrupt .c file
-	  if(rr_hydrogenAlarm_handle == 1)	// if the hydrogen alarm status has changed
+	  if(rr_hydrogenAlarm_handle == 1 || rr_hydrogenAlarm_timeout == 1)	// if the hydrogen alarm status has changed
 	  {
 		  rr_hydrogenAlarm_handle = 0; // set to default
-		  if(can_msg_rx_hydrogenAlarm_data[0] % 2 == 1)	// if the last bit of the can message is 1
+		  if((can_msg_rx_hydrogenAlarm_data[0] > 120) || (rr_hydrogenAlarm_timeout == 1))	// if the last bit of the can message is 1
 		  {
 			  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 1);	// turn on the speaker
+			  Toggle_Red_LED(1);
 		  }
 		  else{
 			  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 0); // turn of the speaker
+			  Toggle_Red_LED(0);
 		  }
 	  }
 

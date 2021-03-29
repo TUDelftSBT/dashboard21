@@ -20,6 +20,6 @@ uint8_t ButtonBatteryRESET(void);
 uint8_t ButtonCB_TRIP(void);
 uint8_t ButtonBilge_ON(void);
 uint8_t ButtonAuto(void);
-uint8_t ButtonOFF(void);
+uint8_t ButtonMotor(void);
 uint8_t read_buttons(void);
 uint8_t read_bulgepump_buttons(void);

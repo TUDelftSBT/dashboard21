@@ -79,7 +79,7 @@ uint8_t ButtonAuto(void) // 1 if auto button selected 0 else
 	}
 }
 
-uint8_t ButtonOFF(void) // 1 if Bilge ON button selected 0 else
+uint8_t ButtonMotor(void) // 1 if Bilge ON button selected 0 else
 {
 	if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5))
 	{
@@ -90,10 +90,6 @@ uint8_t ButtonOFF(void) // 1 if Bilge ON button selected 0 else
 		return 0;
 	}
 }
-
-//uint8_t Button24V(void){
-//	return HAL_GPIO_ReadPin(GPIO)
-//}
 
 uint8_t read_buttons(void){
 	uint8_t button_status = 0;
@@ -116,7 +112,7 @@ uint8_t read_buttons(void){
 	button_status += ButtonAuto();
 	button_status = button_status <<1;
 
-	button_status += ButtonOFF();
+	button_status += ButtonMotor();
 	button_status = button_status <<1;
 
 	return button_status;
@@ -129,16 +125,16 @@ uint8_t read_bulgepump_buttons(void){
 	button_status += HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10); //Bilge1
 	button_status = button_status <<1;
 
-	button_status += HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11);  //Bilge2
+	button_status += HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11); //Bilge2
 	button_status = button_status <<1;
 
-	button_status += HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_12);  //Bilge3
+	button_status += HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_12); //Bilge3
 	button_status = button_status <<1;
 
 	button_status += HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_2);  //Bilge4
 	button_status = button_status <<1;
 
-	button_status += HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3); //Bilge 5
+	button_status += HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3);  //Bilge5
 	button_status = button_status <<1;
 	return  button_status;
 }

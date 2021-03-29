@@ -43,7 +43,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+static int count;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -189,10 +189,17 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-	static int count;
 
-	if(count % 1000 == 0){ // every 100 milliseconds
+
+	if(count % 100 == 0){
+		if((count != 100) && (count != 0) && ((count - HydrogenTimeLastMessage) > 500) ){ // if last transmission is less then 500 milliseconds panic (we muat not have that the count is 1 or 101 otherwise we most likely have integer overflow
+			rr_hydrogenAlarm_timeout = 1;
+		}
+	}
+
+	if(count % 1000 == 0){ // every 1000 milliseconds
 		rr_can_send = 1; 	//read the flow sensor
+
 	}
 
 	if(count<20000){
@@ -240,7 +247,7 @@ void CAN1_RX0_IRQHandler(void)
   /* USER CODE END CAN1_RX0_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
-  CAN1ReceiveMsg();
+  CAN1ReceiveMsg(count);
   /* USER CODE END CAN1_RX0_IRQn 1 */
 }
 
