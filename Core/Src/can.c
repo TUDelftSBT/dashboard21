@@ -42,7 +42,6 @@ void CAN1ReceiveMsg(uint32_t count)
 		can_msg_rx_hydrogenAlarm_data[6] = CAN1RxData[6];
 		can_msg_rx_hydrogenAlarm_data[7] = CAN1RxData[7];
 
-		rr_hydrogenAlarm_handle = 1;
 		HydrogenTimeLastMessage  = count;
 		rr_hydrogenAlarm_timeout = 0;
 	}

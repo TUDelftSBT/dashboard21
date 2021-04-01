@@ -192,13 +192,16 @@ void SysTick_Handler(void)
 
 
 	if(count % 100 == 0){
-		if((count != 100) && (count != 0) && ((count - HydrogenTimeLastMessage) > 500) ){ // if last transmission is less then 500 milliseconds panic (we muat not have that the count is 1 or 101 otherwise we most likely have integer overflow
+		if((count != 100) && (count != 0) && ((count - HydrogenTimeLastMessage) > 600) ){ // if last transmission is less then 500 milliseconds panic (we muat not have that the count is 1 or 101 otherwise we most likely have integer overflow
 			rr_hydrogenAlarm_timeout = 1;
 		}
 	}
 
 	if(count % 1000 == 0){ // every 1000 milliseconds
 		rr_can_send = 1; 	//read the flow sensor
+		rr_hydrogenAlarm_timeout = 0;
+		HydrogenTimeLastMessage = count;
+
 
 	}
 
