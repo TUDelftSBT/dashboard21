@@ -149,7 +149,7 @@ int main(void)
 	  if(rr_WC_handle == 1)
 	  {
 		  rr_WC_handle = 0;
-		  if((can_msg_rx_WC_data[1] & 0b00000001) == 0b00000001) // if the last bit of the can message is 1
+		  if((can_msg_rx_WC_data[0] & 0b1000000) == 0b1000000) // if the last bit of the can message is 1
 		  {
 			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, 1); //turn the CB led on
 		  }

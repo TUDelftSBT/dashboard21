@@ -13,7 +13,7 @@ uint8_t rr_hydrogenAlarm_handle = 0;
 uint8_t rr_hydrogenAlarm_timeout = 0;
 uint32_t HydrogenTimeLastMessage = 0;
 
-uint8_t can_msg_rx_WC_data[2];
+uint8_t can_msg_rx_WC_data[1];
 uint8_t rr_WC_handle = 0;
 
 uint8_t rr_can_send = 0;
@@ -50,7 +50,6 @@ void CAN1ReceiveMsg(uint32_t count)
 	else if (CAN1RxHeader.StdId == can_msg_rx_WC_id) //if the message in the buffer is from the EMS store it in the proper list
 	{
 		can_msg_rx_WC_data[0] = CAN1RxData[0];
-		can_msg_rx_WC_data[1] = CAN1RxData[1];
 		rr_WC_handle = 1;
 	}
 }
