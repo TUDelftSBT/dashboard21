@@ -16,7 +16,7 @@
 
 static const uint32_t can_msg_tx_dashboard_Buttons_id = 500; // dashboard id
 static const uint32_t can_msg_rx_hydrogenAlarm_id = 1600; // hydrogen alarm id, dataframe and handle
-static const uint32_t can_msg_rx_WC_id = 700;	// WC id dataframe and handle
+static const uint32_t can_msg_rx_WC_id = 200;	// WC id dataframe and handle
 
 extern uint8_t rr_can_send;
 
