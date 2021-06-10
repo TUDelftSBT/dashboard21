@@ -140,9 +140,22 @@ int main(void)
 		  }
 	  else
 	  {
-			  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 0); // turn of the speaker
-			  Toggle_Red_LED(0);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 0); // turn of the speaker
+			Toggle_Red_LED(0);
 	  }
+
+
+	  if((can_msg_rx_hydrogenAlarm2_data[0] > 120) || (rr_hydrogenAlarm2_timeout == 1))	// if the last bit of the can message is 1
+		  {
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 1);	// turn on the speaker
+			Toggle_Red_LED(1);
+		  }
+	  else
+	  {
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, 0); // turn of the speaker
+			Toggle_Red_LED(0);
+	  }
+
 
 	  if(rr_WC_handle == 1)
 	  {

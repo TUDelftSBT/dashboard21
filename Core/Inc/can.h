@@ -16,6 +16,7 @@
 
 static const uint32_t can_msg_tx_dashboard_Buttons_id = 500; // dashboard id
 static const uint32_t can_msg_rx_hydrogenAlarm_id = 1600; // hydrogen alarm id, dataframe and handle
+static const uint32_t can_msg_rx_hydrogenAlarm2_id = 1608; // hydrogen alarm id, dataframe and handle
 static const uint32_t can_msg_rx_WC_id = 200;	// WC id dataframe and handle
 
 extern uint8_t rr_can_send;
@@ -24,6 +25,11 @@ extern uint8_t rr_hydrogenAlarm_handle;
 extern uint8_t can_msg_rx_hydrogenAlarm_data[8];
 extern uint8_t rr_hydrogenAlarm_timeout;
 extern uint32_t HydrogenTimeLastMessage;
+
+extern uint8_t can_msg_rx_hydrogenAlarm2_data[8];
+extern uint8_t rr_hydrogenAlarm2_handle;
+extern uint8_t rr_hydrogenAlarm2_timeout;
+extern uint32_t HydrogenTimeLastMessage2;
 
 extern uint8_t rr_WC_handle;
 extern uint8_t can_msg_rx_WC_data[1];
